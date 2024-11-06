@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.requestCountMiddleware = void 0;
+exports.metricsMiddleware = void 0;
 const prom_client_1 = __importDefault(require("prom-client"));
 const requestCounter = new prom_client_1.default.Counter({
     name: "http_requests_total",
@@ -15,7 +15,7 @@ const requestDuration = new prom_client_1.default.Histogram({
     help: "Duration of HTTP requests in seconds",
     labelNames: ["method", "route"],
 });
-const requestCountMiddleware = (req, res, next) => {
+const metricsMiddleware = (req, res, next) => {
     const startTime = Date.now();
     // Simulate delay (e.g., 200 ms)
     setTimeout(() => {
@@ -38,4 +38,4 @@ const requestCountMiddleware = (req, res, next) => {
         next();
     }, 200); // 200 ms delay for demonstration
 };
-exports.requestCountMiddleware = requestCountMiddleware;
+exports.metricsMiddleware = metricsMiddleware;

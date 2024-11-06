@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.metricsMiddleware = void 0;
+exports.gaugeMiddleware = void 0;
 const prom_client_1 = __importDefault(require("prom-client"));
 // Create a Counter metric for total request counts
 const requestCounter = new prom_client_1.default.Counter({
@@ -23,7 +23,7 @@ const activeRequests = new prom_client_1.default.Gauge({
     help: "Current number of active HTTP requests",
 });
 // Middleware function
-const metricsMiddleware = (req, res, next) => {
+const gaugeMiddleware = (req, res, next) => {
     // Start time for duration tracking
     const startTime = Date.now();
     // Increment active requests gauge
@@ -48,4 +48,4 @@ const metricsMiddleware = (req, res, next) => {
     });
     next();
 };
-exports.metricsMiddleware = metricsMiddleware;
+exports.gaugeMiddleware = gaugeMiddleware;

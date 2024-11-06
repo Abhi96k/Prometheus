@@ -14,13 +14,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const prom_client_1 = __importDefault(require("prom-client"));
+const requestCount_1 = require("./monitoring/requestCount");
+const gaugeMiddleware_1 = require("./monitoring/gaugeMiddleware");
 const histogramMiddleware_1 = require("./monitoring/histogramMiddleware");
 const app = (0, express_1.default)();
-// Use JSON middleware
+// Use JSON middleware to parse JSON requests
 app.use(express_1.default.json());
-// Use histogram middleware to track request durations
+// Use metrics middleware for request counting (Counter)
+app.use(requestCount_1.metricsMiddleware);
+// Use gauge middleware to track active requests (Gauge)
+app.use(gaugeMiddleware_1.gaugeMiddleware);
+// Use histogram middleware to track request duration (Histogram)
 app.use(histogramMiddleware_1.histogramMiddleware);
-// Define routes
+// Sample API route to test the setup
 app.get("/api/user", (req, res) => {
     res.send({
         name: "John Doe",
@@ -31,12 +37,12 @@ app.post("/api/user", (req, res) => {
     const user = req.body;
     res.send(Object.assign(Object.assign({}, user), { id: 1 }));
 });
-// Endpoint for Prometheus to scrape metrics
+// Metrics endpoint for Prometheus to scrape
 app.get("/metrics", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.set("Content-Type", prom_client_1.default.register.contentType);
     res.end(yield prom_client_1.default.register.metrics());
 }));
-// Handle undefined routes
+// 404 handler for undefined routes
 app.use((req, res) => {
     res.status(404).send({ error: "Route not found" });
 });
@@ -45,7 +51,7 @@ app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send({ error: "Something went wrong!" });
 });
-// Start server
+// Start the server
 app.listen(3000, () => {
     console.log("Server is running on http://localhost:3000");
 });
