@@ -1,16 +1,24 @@
 import express, { Request, Response, NextFunction } from "express";
 import client from "prom-client";
+import { metricsMiddleware } from "./monitoring/requestCount";
+import { gaugeMiddleware } from "./monitoring/gaugeMiddleware";
 import { histogramMiddleware } from "./monitoring/histogramMiddleware";
 
 const app = express();
 
-// Use JSON middleware
+// Use JSON middleware to parse JSON requests
 app.use(express.json());
 
-// Use histogram middleware to track request durations
+// Use metrics middleware for request counting (Counter)
+app.use(metricsMiddleware);
+
+// Use gauge middleware to track active requests (Gauge)
+app.use(gaugeMiddleware);
+
+// Use histogram middleware to track request duration (Histogram)
 app.use(histogramMiddleware);
 
-// Define routes
+// Sample API route to test the setup
 app.get("/api/user", (req: Request, res: Response) => {
   res.send({
     name: "John Doe",
@@ -26,13 +34,13 @@ app.post("/api/user", (req: Request, res: Response) => {
   });
 });
 
-// Endpoint for Prometheus to scrape metrics
+// Metrics endpoint for Prometheus to scrape
 app.get("/metrics", async (req: Request, res: Response) => {
   res.set("Content-Type", client.register.contentType);
   res.end(await client.register.metrics());
 });
 
-// Handle undefined routes
+// 404 handler for undefined routes
 app.use((req: Request, res: Response) => {
   res.status(404).send({ error: "Route not found" });
 });
@@ -43,7 +51,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(500).send({ error: "Something went wrong!" });
 });
 
-// Start server
+// Start the server
 app.listen(3000, () => {
   console.log("Server is running on http://localhost:3000");
 });

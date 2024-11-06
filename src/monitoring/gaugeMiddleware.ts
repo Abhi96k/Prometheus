@@ -22,7 +22,7 @@ const activeRequests = new client.Gauge({
 });
 
 // Middleware function
-export const metricsMiddleware = (
+export const gaugeMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction

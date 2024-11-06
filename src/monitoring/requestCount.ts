@@ -13,7 +13,7 @@ const requestDuration = new client.Histogram({
   labelNames: ["method", "route"],
 });
 
-export const requestCountMiddleware = (
+export const metricsMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction
