@@ -10,10 +10,10 @@ const app = express();
 app.use(express.json());
 
 // Use metrics middleware for request counting (Counter)
-app.use(metricsMiddleware);
+// app.use(metricsMiddleware);
 
-// Use gauge middleware to track active requests (Gauge)
-app.use(gaugeMiddleware);
+// // Use gauge middleware to track active requests (Gauge)
+// app.use(gaugeMiddleware);
 
 // Use histogram middleware to track request duration (Histogram)
 app.use(histogramMiddleware);

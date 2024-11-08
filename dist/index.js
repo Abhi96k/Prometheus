@@ -14,16 +14,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const prom_client_1 = __importDefault(require("prom-client"));
-const requestCount_1 = require("./monitoring/requestCount");
-const gaugeMiddleware_1 = require("./monitoring/gaugeMiddleware");
 const histogramMiddleware_1 = require("./monitoring/histogramMiddleware");
 const app = (0, express_1.default)();
 // Use JSON middleware to parse JSON requests
 app.use(express_1.default.json());
 // Use metrics middleware for request counting (Counter)
-app.use(requestCount_1.metricsMiddleware);
-// Use gauge middleware to track active requests (Gauge)
-app.use(gaugeMiddleware_1.gaugeMiddleware);
+// app.use(metricsMiddleware);
+// // Use gauge middleware to track active requests (Gauge)
+// app.use(gaugeMiddleware);
 // Use histogram middleware to track request duration (Histogram)
 app.use(histogramMiddleware_1.histogramMiddleware);
 // Sample API route to test the setup
